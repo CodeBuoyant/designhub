@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,10 +54,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof AuthorizationException) {
-            if ($request->expectsJson()) {
-                return response()->json(["errors" => ["You are not authorize to access this resource"]], 403);
-            }
+        if ($exception instanceof AuthorizationException && $request->expectsJson()) {
+            return response()->json(["errors" => ["You are not authorize to access this resource"]], 403);
+        }
+
+        if ($exception instanceof ModelNotFoundException && $request->expectsJson()) {
+            return response()->json(["errors" => ["The resource was not found in the database"]], 404);
         }
 
         return parent::render($request, $exception);
