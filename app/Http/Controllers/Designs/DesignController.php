@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Designs;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DesignResource;
 use App\Models\Design;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -19,8 +20,6 @@ class DesignController extends Controller
             'description' => ['required', 'string', 'min:20', 'max:140']
         ]);
 
-//
-
         $design->update([
             'title' => $request->title,
             'description' => $request->description,
@@ -28,6 +27,6 @@ class DesignController extends Controller
             'is_live' => ! $design->upload_successful ? false : $request->is_live
         ]);
 
-        return response()->json($design, 200);
+        return new DesignResource($design);
     }
 }
