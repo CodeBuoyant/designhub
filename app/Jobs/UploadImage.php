@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Design;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -12,14 +13,16 @@ class UploadImage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $design;
+
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param Design $design
      */
-    public function __construct()
+    public function __construct(Design $design)
     {
-        //
+        $this->design = $design;
     }
 
     /**
