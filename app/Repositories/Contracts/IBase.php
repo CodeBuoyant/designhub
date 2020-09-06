@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-interface IDesign
+interface IBase
 {
-    //
+    public function all();
 }
