@@ -55,11 +55,15 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof AuthorizationException && $request->expectsJson()) {
-            return response()->json(["errors" => ["You are not authorize to access this resource"]], 403);
+            return response()->json(["errors" => ["message" => "You are not authorize to access this resource"]], 403);
         }
 
         if ($exception instanceof ModelNotFoundException && $request->expectsJson()) {
-            return response()->json(["errors" => ["The resource was not found in the database"]], 404);
+            return response()->json(["errors" => ["message" => "The resource was not found in the database"]], 404);
+        }
+
+        if ($exception instanceof ModelNotDefined && $request->expectsJson()) {
+            return response()->json(["errors" => ["message" => "No model defined"]], 500);
         }
 
         return parent::render($request, $exception);

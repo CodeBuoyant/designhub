@@ -6,9 +6,9 @@ namespace App\Repositories\Eloquent;
 use App\Models\User;
 use App\Repositories\Contracts\IUser;
 
-class UserRepository implements IUser
+class UserRepository extends BaseRepository implements IUser
 {
-    public function all() {
-        return User::all();
+    public function model() {
+        return User::class;
     }
 }
