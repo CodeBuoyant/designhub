@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Repositories\Contracts\IUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -12,15 +13,17 @@ use Illuminate\Validation\ValidationException;
 
 class VerificationController extends Controller
 {
+    protected $users;
+
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @param IUser $users
      */
-    public function __construct()
+    public function __construct(IUser $users)
     {
-//        $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+        $this->users = $users;
     }
 
     /**
@@ -59,7 +62,8 @@ class VerificationController extends Controller
             'email' => ['email', 'required']
         ]);
 
-        $user = User::where('email', $request->email)->first();
+//        $user = User::where('email', $request->email)->first();
+        $user = $this->users->findWhereFirst('email', $request->email);
 
         if (!$user) {
             return response()->json(["errors" => [
