@@ -59,8 +59,6 @@ abstract class BaseRepository implements IBase, ICriteria
         }
 
         return $this;
-
-        dd($criteria);
     }
 
     protected function getModelClass() {
