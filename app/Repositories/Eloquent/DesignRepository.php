@@ -11,6 +11,14 @@ class DesignRepository extends BaseRepository implements IDesign
         return Design::class;
     }
 
+    public function allLive() {
+        return $this->model->where('is_live', true)->get();
+    }
+
+    public function allLiveLatestFirst() {
+        return $this->model->where('is_live', true)->latest();
+    }
+
     public function applyTags($id, array $data) {
         $design = $this->find($id);
         $design->retag($data);
