@@ -7,5 +7,7 @@ use App\Repositories\Contracts\IComment;
 
 class CommentRepository extends BaseRepository implements IComment
 {
-
+    public function model() {
+        return Comment::class;
+    }
 }
