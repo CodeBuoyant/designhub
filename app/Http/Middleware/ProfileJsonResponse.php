@@ -35,9 +35,9 @@ class ProfileJsonResponse
 //            ]));
 
             // Only returns queries
-            $response->setData(array_merge($response->getData(true), [
+            $response->setData(array_merge([
                 '_debugbar' => Arr::only(app('debugbar')->getData(), 'queries')
-            ]));
+            ], $response->getData(true)));
         }
 
         return $response;
