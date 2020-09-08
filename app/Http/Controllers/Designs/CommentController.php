@@ -30,4 +30,23 @@ class CommentController extends Controller
 
         return new CommentResource($comment);
     }
+
+    public function update(Request $request, $id) {
+        $comment = $this->comments->find($id);
+        $this->authorize('update', $comment);
+
+        $this->validate($request, [
+            'body' => ['required']
+        ]);
+
+        $comment = $this->comments->update($id, [
+            'body' => $request->body
+        ]);
+
+        return new CommentResource($comment);
+    }
+
+    public function destroy($id) {
+        //
+    }
 }

@@ -10,4 +10,6 @@ class CommentRepository extends BaseRepository implements IComment
     public function model() {
         return Comment::class;
     }
+
+//    public function
 }
