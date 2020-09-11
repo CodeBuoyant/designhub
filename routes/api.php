@@ -10,6 +10,9 @@ Route::get('designs/{id}', 'Designs\DesignController@findDesign');
 // Get users
 Route::get('users', 'User\UserController@index');
 
+// Teams
+Route::get('teams/{id}', 'Teams\TeamController@findBySlug');
+
 // Route group for authenticated users only
 Route::group(['middleware' => ['auth:api']], function () {
     Route::post('logout', 'Auth\LoginController@logout');
@@ -30,6 +33,14 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('designs/{id}/comments', 'Designs\CommentController@store');
     Route::put('comments/{id}', 'Designs\CommentController@update');
     Route::delete('comments/{id}', 'Designs\CommentController@destroy');
+
+    // Teams
+    Route::get('teams', 'Teams\TeamController@index');
+    Route::post('teams', 'Teams\TeamController@store');
+    Route::get('teams/{id}', 'Teams\TeamController@findById');
+    Route::get('users/teams', 'Teams\TeamController@fetchUserTeams');
+    Route::put('teams/{id}', 'Teams\TeamController@update');
+    Route::delete('teams/{id}', 'Teams\TeamController@destroy');
 });
 
 // Route group for guests only
