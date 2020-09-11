@@ -3,10 +3,17 @@
 namespace App\Http\Controllers\Teams;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Contracts\ITeam;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
+    protected $teams;
+
+    public function __construct(ITeam $teams) {
+        $this->teams = $teams;
+    }
+
     public function index(Request $request) {
         //
     }
