@@ -16,7 +16,7 @@ class LoginController extends Controller
         // attempt to issue a token to the user based on the login credentials
         $token = $this->guard()->attempt($this->credentials($request));
 
-        if( ! $token){
+        if( ! $token ){
             return false;
         }
 
@@ -27,7 +27,7 @@ class LoginController extends Controller
             return false;
         }
 
-        // set the user's token
+        // Set the user's token
         $this->guard()->setToken($token);
 
         return true;
@@ -36,10 +36,10 @@ class LoginController extends Controller
     protected function sendLoginResponse(Request $request) {
         $this->clearLoginAttempts($request);
 
-        // get the tokem from the authentication guard (JWT)
+        // Get the token from the authentication guard (JWT)
         $token = (string)$this->guard()->getToken();
 
-        // extract the expiry date of the token
+        // Extract the expiry date of the token
         $expiration = $this->guard()->getPayload()->get('exp');
 
         return response()->json([
@@ -48,6 +48,7 @@ class LoginController extends Controller
             'expires_in' => $expiration
         ]);
     }
+
 
     protected function sendFailedLoginResponse() {
         $user = $this->guard()->user();

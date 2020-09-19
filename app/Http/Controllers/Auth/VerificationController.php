@@ -36,14 +36,14 @@ class VerificationController extends Controller
         if (! URL::hasValidSignature($request)) {
             return response()->json(["errors" => [
                 "message" => "Invalid verification link"
-            ]], 433);
+            ]], 422);
         }
 
         // Check if the user has already verified account
         if ($user->hasVerifiedEmail()) {
             return response()->json(["errors" => [
                 "message" => "Email address already verified"
-            ]], 433);
+            ]], 422);
         }
 
         $user->markEmailAsVerified();
