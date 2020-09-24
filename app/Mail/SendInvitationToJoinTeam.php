@@ -35,12 +35,23 @@ class SendInvitationToJoinTeam extends Mailable
     public function build()
     {
         if ($this->user_exists) {
+            $url = config('app.client_url').'/settings/teams';
+
             return $this->markdown('emails.invitations.invite-existing-user')
                 ->subject('Invitation to join team ' . $this->invitation->team->name)
-                ->with('invitation', $this->invitation);
+                ->with([
+                    'invitation' => $this->invitation,
+                    'url' => $url
+                ]);
         } else {
+            $url = config('app.client_url').'/register?invitation='.$this->invitation->recipient_email;
+
             return $this->markdown('emails.invitations.invite-new-user')
-                ->subject('Invitation to join team ' . $this->invitation->team->name);
+                ->subject('Invitation to join team ' . $this->invitation->team->name)
+                ->with([
+                    'invitation' => $this->invitation,
+                    'url' => $url
+                ]);
         }
 
     }
