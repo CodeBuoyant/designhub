@@ -49,16 +49,15 @@ class InvitationController extends Controller
         // If the recipient does not exist, send invitation to join the team
         if (! $recipient) {
             $this->createInvitation(false, $team, $request->email);
-
             return response()->json(['email' => 'Invitation sent to user'], 200);
         }
 
-        // If user exist; check if the team already has the user
+        // If user exist, check if the team already has the user
         if ($team->hasUser($recipient)) {
             return response()->json(['email' => 'User already a member'], 422);
         }
 
-        // Send the invitation to user
+        // If user exist, send the invitation to user
         $this->createInvitation(true, $team, $request->email);
         return response()->json(['email' => 'Invitation sent to user'], 200);
     }
@@ -75,7 +74,7 @@ class InvitationController extends Controller
         //
     }
 
-    protected function createInvitation( bool $user_exists, Team $team, string $email) {
+    protected function createInvitation( bool $user_exists, Team $team, string $email ) {
         $invitation = $this->invitations->create([
             'team_id' => $team->id,
             'sender_id' => auth()->id(),
