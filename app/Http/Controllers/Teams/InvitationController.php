@@ -63,7 +63,15 @@ class InvitationController extends Controller
     }
 
     public function resend($id) {
-        //
+        $invitation = $this->invitations->find($id);
+
+        // Get the recipient by email
+        $recipient = $this->users->findByEmail($invitation->recipient_email);
+
+        Mail::to($invitation->recipient_email)
+            ->send(new SendInvitationToJoinTeam($invitation, !is_null($recipient)));
+
+        return response()->json(['message' => 'Invitation resent'], 200);
     }
 
     public function respond(Request $request, $id) {
