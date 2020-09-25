@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('users/teams', 'Teams\TeamController@fetchUserTeams');
     Route::put('teams/{id}', 'Teams\TeamController@update');
     Route::delete('teams/{id}', 'Teams\TeamController@destroy');
-    Route::delete('teams/{id}/user/{user_id}', 'Teams\TeamController@removeFromTeam');
+    Route::delete('teams/{id}/users/{user_id}', 'Teams\TeamController@removeFromTeam');
 
     // Invitations
     Route::post('invitations/{teamId}', 'Teams\InvitationController@invite');
@@ -49,6 +49,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('invitations/{id}/respond', 'Teams\InvitationController@respond');
     Route::delete('invitations/{id}', 'Teams\InvitationController@destroy');
 
+    // Chats
+    Route::post('chats', 'Chats\ChatController@sendMessage');
+    Route::get('chats', 'Chats\ChatController@getUserChats');
+    Route::get('chats/{id]/messages', 'Chats\ChatController@getChatMessages');
+    Route::put('chats/{id]/markAsRead', 'Chats\ChatController@markAsRead');
+    Route::delete('messages/{id]', 'Chats\ChatController@destroyMessage');
 });
 
 // Route group for guests only
