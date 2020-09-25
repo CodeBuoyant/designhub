@@ -5,6 +5,10 @@ namespace App\Models;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -62,8 +66,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      *
      * @return mixed
      */
-    public function getJWTIdentifier()
-    {
+    public function getJWTIdentifier() {
         return $this->getKey();
     }
 
@@ -77,6 +80,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return [];
     }
 
+    /**
+     * @param $password
+     */
     public function setPasswordAttribute($password)
     {
         if ( !empty($password) ) {
@@ -84,30 +90,52 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         }
     }
 
+    /**
+     *
+     */
     public function sendEmailVerificationNotification() {
         $this->notify(new VerifyEmail);
     }
 
+    /**
+     * @param string $token
+     */
     public function sendPasswordResetNotification($token) {
         $this->notify(new ResetPassword($token));
     }
 
+    /**
+     * @return HasMany
+     */
     public function designs() {
         return $this->hasMany(Design::class);
     }
 
+    /**
+     * @return HasMany
+     */
     public function comments() {
         return $this->hasMany(Comment::class);
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function teams() {
         return $this->belongsToMany(Team::class)->withTimestamps();
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function ownedTeams() {
         return $this->teams()->where('owner_id', $this->id);
     }
 
+    /**
+     * @param $team
+     * @return bool
+     */
     public function isOwnerOfTeam($team) {
         return (bool)$this->teams()
                         ->where('id', $team->id)
@@ -115,19 +143,33 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
                         ->count();
     }
 
+    /**
+     * @return HasMany
+     */
     public function invitations() {
         return $this->hasMany(Invitation::class, 'recipient_email', 'email');
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function chats() {
         return $this->belongsToMany(Chat::class, 'participants');
     }
 
+    /**
+     * @return HasMany
+     */
     public function messages() {
         return $this->hasMany(Message::class);
     }
 
     // Helper methods for chat
+
+    /**
+     * @param $user_id
+     * @return Builder|Model|BelongsToMany|mixed|object|null
+     */
     public function getChatWithUser($user_id) {
         $chat = $this->chats()->whereHas('participants', function ($query) use($user_id){
             $query->where('user_id', $user_id);
