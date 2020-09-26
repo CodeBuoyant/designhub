@@ -52,9 +52,9 @@ Route::group(['middleware' => ['auth:api']], function () {
     // Chats
     Route::post('chats', 'Chats\ChatController@sendMessage');
     Route::get('chats', 'Chats\ChatController@getUserChats');
-    Route::get('chats/{id]/messages', 'Chats\ChatController@getChatMessages');
-    Route::put('chats/{id]/markAsRead', 'Chats\ChatController@markAsRead');
-    Route::delete('messages/{id]', 'Chats\ChatController@destroyMessage');
+    Route::get('chats/{id}/messages', 'Chats\ChatController@getChatMessages');
+    Route::put('chats/{id}/markAsRead', 'Chats\ChatController@markAsRead');
+    Route::delete('messages/{id}', 'Chats\ChatController@destroyMessage');
 });
 
 // Route group for guests only
