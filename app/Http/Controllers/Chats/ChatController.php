@@ -8,19 +8,42 @@ use App\Http\Resources\MessageResource;
 use App\Repositories\Contracts\IChat;
 use App\Repositories\Contracts\IMessage;
 use App\Repositories\Eloquent\Criteria\WithTrashed;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class ChatController extends Controller
 {
+    /**
+     * @var IChat
+     */
     protected $chats;
+
+    /**
+     * @var IMessage
+     */
     protected $messages;
 
+    /**
+     * ChatController constructor.
+     *
+     * @param IChat $chats
+     * @param IMessage $messages
+     */
     public function __construct(IChat $chats, IMessage $messages) {
         $this->chats = $chats;
         $this->messages = $messages;
     }
 
-    // Send message to user
+    /**
+     * Send message to user
+     *
+     * @param Request $request
+     * @return MessageResource
+     * @throws ValidationException
+     */
     public function sendMessage(Request $request) {
         // Validate request form user
         $this->validate($request, [
@@ -54,19 +77,33 @@ class ChatController extends Controller
         return new MessageResource($message);
     }
 
-    // Get chats for user
+    /**
+     * Get chats for user
+     *
+     * @return AnonymousResourceCollection
+     */
     public function getUserChats() {
         return ChatResource::collection($this->chats->getUserChats());
     }
 
-    // Get messages for chat
+    /**
+     * Get messages for chat
+     *
+     * @param $id
+     * @return AnonymousResourceCollection
+     */
     public function getChatMessages($id) {
         return MessageResource::collection($this->messages->withCriteria([
             new WithTrashed()
         ])->findWhere('chat_id', $id));
     }
 
-    // Mark chat as read
+    /**
+     * Mark chat as read
+     *
+     * @param $id
+     * @return JsonResponse
+     */
     public function markAsRead($id) {
         $chat = $this->chats->find($id);
         $chat->markAsReadForUser(auth()->id());
@@ -74,7 +111,12 @@ class ChatController extends Controller
         return response()->json(['message' => 'Success'], 200);
     }
 
-    // Destroy message
+    /**
+     * Destroy message
+     *
+     * @param $id
+     * @throws AuthorizationException
+     */
     public function destroyMessage($id) {
         $message = $this->messages->find($id);
         $this->authorize('delete', $message);
