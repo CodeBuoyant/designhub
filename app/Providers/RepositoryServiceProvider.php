@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Repositories\Contracts\{IComment, IDesign, IInvitation, ITeam, IUser};
+use App\Repositories\Contracts\{IChat, IComment, IDesign, IInvitation, IMessage, ITeam, IUser};
 
-use App\Repositories\Eloquent\{CommentRepository,
+use App\Repositories\Eloquent\{ChatRepository,
+    CommentRepository,
     DesignRepository,
     InvitationRepository,
+    MessageRepository,
     TeamRepository,
     UserRepository};
 
@@ -35,5 +37,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(IComment::class, CommentRepository::class);
         $this->app->bind(ITeam::class, TeamRepository::class);
         $this->app->bind(IInvitation::class, InvitationRepository::class);
+        $this->app->bind(IMessage::class, MessageRepository::class);
+        $this->app->bind(IChat::class, ChatRepository::class);
     }
 }
