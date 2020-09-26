@@ -68,7 +68,10 @@ class ChatController extends Controller
 
     // Mark chat as read
     public function markAsRead($id) {
-        //
+        $chat = $this->chats->find($id);
+        $chat->markAsReadForUser(auth()->id());
+
+        return response()->json(['message' => 'Success'], 200);
     }
 
     // Destroy message
