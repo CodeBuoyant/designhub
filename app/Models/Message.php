@@ -20,6 +20,19 @@ class Message extends Model
         'last_read'
     ];
 
+    public function getBodyAttribute($value) {
+        if ($this->trashed()) {
+            if (!auth()->check()) return null;
+
+            return auth()->id() === $this->sender->id ?
+                'You deleted this message' :
+//                "{$this->sender->name} deleted this message";
+                "This message is deleted";
+        }
+
+        return $value;
+    }
+
     /**
      * @return BelongsTo
      */
