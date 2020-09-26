@@ -7,6 +7,7 @@ use App\Http\Resources\ChatResource;
 use App\Http\Resources\MessageResource;
 use App\Repositories\Contracts\IChat;
 use App\Repositories\Contracts\IMessage;
+use App\Repositories\Eloquent\Criteria\WithTrashed;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
@@ -60,7 +61,9 @@ class ChatController extends Controller
 
     // Get messages for chat
     public function getChatMessages($id) {
-        //
+        return MessageResource::collection($this->messages->withCriteria([
+            new WithTrashed()
+        ])->findWhere('chat_id', $id));
     }
 
     // Mark chat as read
